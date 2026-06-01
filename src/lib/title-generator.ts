@@ -4,30 +4,17 @@ import type { Category } from "@/store/queue.store";
 
 /**
  * Generate the next auto-incremented title (e.g. "DRX-117") for the given
- * category by querying the most recent product in Supabase.
- *
- * Fallback chain:
- * 1. Parse the numeric suffix from the latest DB title for this category.
- * 2. If no DB records exist, use the hard-coded base from CATEGORY_BASE_NUMBERS.
- * 3. Add 1 and return "DRX-{number}".
+ * category by calling the get_next_drx_title RPC in Supabase.
  */
 export async function generateNextTitle(category: Category): Promise<string> {
-  const { data, error } = await supabase
-    .from("products")
-    .select("title")
-    .eq("type", category)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("get_next_drx_title", {
+    cat_name: category,
+    base_num: CATEGORY_BASE_NUMBERS[category],
+  });
 
-  let lastNumber = CATEGORY_BASE_NUMBERS[category];
-
-  if (!error && data?.title) {
-    const match = data.title.match(/DRX-(\d+)/i);
-    if (match) {
-      lastNumber = parseInt(match[1], 10);
-    }
+  if (error) {
+    throw error; // Or handle the error as appropriate for your application
   }
 
-  return `DRX-${lastNumber + 1}`;
+  return data as string;
 }

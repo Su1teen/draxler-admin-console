@@ -21,6 +21,8 @@ import { useArchive } from "@/store/archive.store";
 import { useActivity } from "@/store/activity.store";
 import { useAuth } from "@/store/auth.store";
 import { publishProduct, uploadImageToCloudinary } from "@/lib/upload.service";
+import { useSeoTemplates } from "@/store/seo-templates.store";
+import { SeoTemplateManager } from "./SeoTemplateManager";
 
 interface SectionState {
   title: string;
@@ -36,6 +38,7 @@ interface SingleUploadFormProps {
   onBatchSave?: (patch: {
     category: Category;
     tags: string[];
+    tag_text: string;
     sizes: string[];
     sections: { title: string; text: string }[];
   }) => void;
@@ -57,6 +60,21 @@ export function SingleUploadForm({
   const updateQueue = useQueue((s) => s.update);
   const log = useActivity((s) => s.log);
   const actor = useAuth((s) => s.user?.name ?? "Система");
+
+  const { templates, fetchTemplates } = useSeoTemplates();
+  const [tagText, setTagText] = React.useState<string>(initial?.tag_text ?? "");
+  const [hasAutoFilledTemplate, setHasAutoFilledTemplate] = React.useState(false);
+
+  React.useEffect(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
+
+  React.useEffect(() => {
+    if (mode === "create" && !tagText && templates.length > 0 && !hasAutoFilledTemplate) {
+      setTagText(templates[0].content);
+      setHasAutoFilledTemplate(true);
+    }
+  }, [mode, templates, tagText, hasAutoFilledTemplate]);
 
   // For edits, images contains string URLs. For new uploads, mix of string URLs and object URLs
   const [images, setImages] = React.useState<string[]>(initial?.images ?? []);
@@ -121,6 +139,7 @@ export function SingleUploadForm({
     setTitle("");
     setCategory("luxury");
     setTags([]);
+    setTagText(templates.length > 0 ? templates[0].content : "");
     setSizes([...DEFAULT_SIZES]);
     setSections(DEFAULT_SECTIONS.map((s) => ({ title: s.title, text: s.text })));
     setProgress("");
@@ -147,6 +166,7 @@ export function SingleUploadForm({
       onBatchSave({
         category,
         tags,
+        tag_text: tagText,
         sizes,
         sections: sections.map((s) => ({ title: s.title, text: s.text })),
       });
@@ -193,6 +213,7 @@ export function SingleUploadForm({
           images: finalImages,
           category,
           tags,
+          tag_text: tagText,
           sizes,
           ...sectionFields(),
         };
@@ -236,6 +257,7 @@ export function SingleUploadForm({
           title: autoTitle,
           type: category,
           parameters: JSON.stringify({ tags }),
+          tag_text: tagText,
           sizes,
           ...sectionFields(),
         },
@@ -324,6 +346,27 @@ export function SingleUploadForm({
           </div>
           <div className="bg-card border border-border rounded-[2px] p-4 md:p-6 space-y-6 md:space-y-8">
             <TagInput value={tags} onChange={setTags} />
+            
+            <div className="pt-4 border-t border-border">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[13px] text-muted-foreground font-medium">
+                  Текст тегов (SEO абзац)
+                </div>
+                <SeoTemplateManager 
+                  currentText={tagText} 
+                  onSelectTemplate={setTagText} 
+                  onSaveAsNew={() => {}}
+                />
+              </div>
+              <textarea
+                value={tagText}
+                onChange={(e) => setTagText(e.target.value)}
+                placeholder="Вставьте объемный SEO-текст с брендами..."
+                rows={6}
+                className="w-full bg-background border border-border rounded-[4px] px-4 py-3 text-[14px] text-foreground outline-none focus:border-primary transition-colors resize-y leading-relaxed"
+              />
+            </div>
+
             <div>
               <div className="text-[13px] text-muted-foreground mb-3 font-medium">
                 Доступные размеры

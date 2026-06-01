@@ -22,6 +22,7 @@ export interface Product {
   section_4_text: string;
   section_5_title: string;
   section_5_text: string;
+  tag_text: string | null;
 }
 
 export interface ProductImage {
@@ -47,4 +48,4 @@ export type ProductInsert = Pick<
   | "section_4_text"
   | "section_5_title"
   | "section_5_text"
->;
+> & { tag_text?: string };

@@ -36,35 +36,23 @@ serve(async (req) => {
 
         let finalTitle = item.title;
         if (!finalTitle || finalTitle.trim() === "") {
-          // Auto-generate title by querying the latest product of this category
           const categoryBaseNumbers: Record<string, number> = {
             luxury: 116,
             "off-road": 314,
             sport: 213,
           };
 
-          let lastNumber = categoryBaseNumbers[item.category] ?? 100;
+          const baseNum = categoryBaseNumbers[item.category] ?? 100;
 
-          try {
-            const { data: latestProduct } = await supabaseAdmin
-              .from("products")
-              .select("title")
-              .eq("type", item.category)
-              .order("created_at", { ascending: false })
-              .limit(1)
-              .maybeSingle();
+          const { data: rpcData, error: rpcError } = await supabaseAdmin.rpc("get_next_drx_title", {
+            cat_name: item.category,
+            base_num: baseNum,
+          });
 
-            if (latestProduct?.title) {
-              const match = latestProduct.title.match(/DRX-(\d+)/i);
-              if (match) {
-                lastNumber = parseInt(match[1], 10);
-              }
-            }
-          } catch {
-            // Fallback to base number if query fails
+          if (rpcError) {
+            throw rpcError;
           }
-
-          finalTitle = `DRX-${lastNumber + 1}`;
+          finalTitle = rpcData as string;
         }
 
         // Insert Product
@@ -74,6 +62,7 @@ serve(async (req) => {
             title: finalTitle,
             type: item.category,
             parameters: JSON.stringify({ tags: item.tags }),
+            tag_text: item.tag_text,
             sizes: item.sizes,
             section_1_title: item.section_1_title,
             section_1_text: item.section_1_text,

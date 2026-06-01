@@ -83,5 +83,6 @@ export function toProductInsert(item: any): ProductInsert {
     section_4_text: item.section_4_text,
     section_5_title: item.section_5_title,
     section_5_text: item.section_5_text,
+    tag_text: item.tag_text,
   };
 }

@@ -1,4 +1,4 @@
-﻿import { create } from "zustand";
+import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { supabase, type Product } from "@/lib/supabase";
 import type { Category, QueueItem } from "./queue.store";
@@ -63,6 +63,7 @@ function mapProductToArchiveItem(
     section_5_text: product.section_5_text ?? "",
     category: (product.type as Category) ?? "luxury",
     tags,
+    tag_text: product.tag_text ?? "",
     paused: false,
     scheduledAt: 0,
     status: "success",
@@ -160,6 +161,7 @@ export const useArchive = create<ArchiveState>()(
         if (patch.section_4_text !== undefined) dbPatch.section_4_text = patch.section_4_text;
         if (patch.section_5_title !== undefined) dbPatch.section_5_title = patch.section_5_title;
         if (patch.section_5_text !== undefined) dbPatch.section_5_text = patch.section_5_text;
+        if (patch.tag_text !== undefined) dbPatch.tag_text = patch.tag_text;
 
         if (Object.keys(dbPatch).length > 0) {
           const { error } = await supabase

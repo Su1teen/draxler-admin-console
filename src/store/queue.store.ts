@@ -28,6 +28,7 @@ export interface QueueItem {
   section_5_text: string;
   category: Category;
   tags: string[];
+  tag_text?: string;
   paused: boolean;
   scheduledAt: number;
   status: PublishStatus;
@@ -108,6 +109,7 @@ export const useQueue = create<QueueState>()(
           section_5_text: item.section_5_text,
           category: item.category,
           tags: item.tags,
+          tag_text: item.tag_text,
           status: "pending",
           scheduled_at: new Date(item.scheduledAt).toISOString()
         }));

@@ -22,6 +22,7 @@ import { dur, easeOut } from "@/lib/motion";
 import { EmptyState } from "@/components/primitives/EmptyState";
 import { uploadImageToCloudinary } from "@/lib/upload.service";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useSeoTemplates } from "@/store/seo-templates.store";
 
 export const Route = createFileRoute("/_app/batch")({
   head: () => ({ meta: [{ title: "Пакетная загрузка — Draxler" }] }),
@@ -40,6 +41,7 @@ interface Draft {
   files: File[];
   /* Extended fields — customizable per-draft via edit sheet */
   tags: string[];
+  tag_text: string;
   sizes: string[];
   sections: DraftSection[];
 }
@@ -57,6 +59,11 @@ function BatchPage() {
   const [defaultCat, setDefaultCat] = React.useState<Category>("luxury");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [editingDraft, setEditingDraft] = React.useState<Draft | null>(null);
+  
+  const { templates, fetchTemplates } = useSeoTemplates();
+  React.useEffect(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
 
   const handleInitialFiles = (files: File[]) => {
     const next: Draft[] = files.map((f) => ({
@@ -65,6 +72,7 @@ function BatchPage() {
       files: [f],
       category: defaultCat,
       tags: [],
+      tag_text: templates.length > 0 ? templates[0].content : "",
       sizes: [...DEFAULT_SIZES],
       sections: DEFAULT_SECTIONS.map((s) => ({ title: s.title, text: s.text })),
     }));
@@ -104,6 +112,7 @@ function BatchPage() {
     patch: {
       category: Category;
       tags: string[];
+      tag_text: string;
       sizes: string[];
       sections: { title: string; text: string }[];
     },
@@ -111,7 +120,7 @@ function BatchPage() {
     setDrafts((prev) =>
       prev.map((d) =>
         d.id === id
-          ? { ...d, category: patch.category, tags: patch.tags, sizes: patch.sizes, sections: patch.sections }
+          ? { ...d, category: patch.category, tags: patch.tags, tag_text: patch.tag_text, sizes: patch.sizes, sections: patch.sections }
           : d,
       ),
     );
@@ -146,6 +155,7 @@ function BatchPage() {
           section_5_text: d.sections[4]?.text ?? DEFAULT_SECTIONS[4].text,
           category: d.category,
           tags: d.tags,
+          tag_text: d.tag_text,
         });
       }
 
@@ -209,6 +219,32 @@ function BatchPage() {
               onChange={setDefaultCat}
               size="sm"
             />
+          </div>
+          <div className="mt-4 pt-4 border-t border-border flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="text-[11px] tracking-wider uppercase text-muted-foreground">
+              Массово применить SEO-шаблон
+            </div>
+            {templates.length > 0 ? (
+              <select
+                className="bg-muted text-[13px] text-foreground border-none rounded-[4px] px-3 py-1.5 outline-none cursor-pointer"
+                onChange={(e) => {
+                  const tpl = templates.find((t) => t.id === e.target.value);
+                  if (tpl) {
+                    setDrafts((prev) => prev.map((d) => ({ ...d, tag_text: tpl.content })));
+                    toast.success("Шаблон применен ко всем черновикам");
+                  }
+                  e.target.value = ""; // Reset after selection
+                }}
+                defaultValue=""
+              >
+                <option value="" disabled>Выберите шаблон...</option>
+                {templates.map((t) => (
+                  <option key={t.id} value={t.id}>{t.title}</option>
+                ))}
+              </select>
+            ) : (
+              <div className="text-[12px] text-muted-foreground italic">Нет доступных шаблонов</div>
+            )}
           </div>
         </SectionCard>
         <IntervalConfigurator value={intervalMin} onChange={setInterval} />
@@ -371,6 +407,7 @@ function BatchPage() {
                   images: editingDraft.thumbs,
                   category: editingDraft.category,
                   tags: editingDraft.tags,
+                  tag_text: editingDraft.tag_text,
                   sizes: editingDraft.sizes,
                   section_1_title: editingDraft.sections[0]?.title,
                   section_1_text: editingDraft.sections[0]?.text,
