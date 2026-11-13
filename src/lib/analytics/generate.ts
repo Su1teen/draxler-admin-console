@@ -43,7 +43,7 @@ function dayValue(idx: number, salt: number) {
   const weekly = [1.12, 0.94, 0.92, 0.95, 0.98, 1.08, 1.16][dow];
   const trend = 1 + ((idx % 365) / 365) * 0.35;
   const noise = 0.88 + rnd() * 0.26;
-  const spike = rnd() > 0.95 ? 1.35 + rnd() * 0.4 : 1; // occasional Instagram / blog spikes
+  const spike = rnd() > 0.95 ? 1.35 + rnd() * 0.4 : 1; // occasional search / blog spikes
   const views = Math.max(540, Math.round(640 * weekly * trend * noise * spike));
   const pagesPerSession = 2.6 + rnd() * 0.9;
   const sessions = Math.round(views / pagesPerSession);
@@ -143,13 +143,12 @@ function distribute<T extends { weight: number }>(items: T[], total: number, rnd
 }
 
 export const SOURCES = [
-  { key: "organic", label: "Google / органика", weight: 41 },
-  { key: "direct", label: "Прямые заходы", weight: 22 },
-  { key: "instagram", label: "Instagram", weight: 18 },
-  { key: "whatsapp", label: "WhatsApp / мессенджеры", weight: 7 },
-  { key: "referral", label: "Рефералы / форумы", weight: 6 },
-  { key: "yandex", label: "Яндекс", weight: 4 },
-  { key: "paid", label: "Реклама", weight: 2 },
+  { key: "organic", label: "Google / органика", weight: 44 },
+  { key: "direct", label: "Прямые заходы", weight: 33 },
+  { key: "yandex", label: "Яндекс", weight: 8 },
+  { key: "referral", label: "Сайты-партнёры / форумы", weight: 8 },
+  { key: "bing", label: "Bing и другие поисковики", weight: 4 },
+  { key: "paid", label: "Контекстная реклама", weight: 3 },
 ];
 
 export const PAGES = [
@@ -174,13 +173,12 @@ export const PAGES = [
 
 export const CLICK_EVENTS = [
   { key: "configurator_open", label: "Открыл конфигуратор", area: "Главная", weight: 22 },
-  { key: "whatsapp", label: "Кнопка WhatsApp", area: "Везде", weight: 17 },
+  { key: "contact_form", label: "Форма заявки", area: "Конфигуратор", weight: 9 },
   { key: "catalog_card", label: "Карточка диска в каталоге", area: "Каталог", weight: 26 },
   { key: "wheel_swap", label: "Смена диска в конфигураторе", area: "Конфигуратор", weight: 31 },
   { key: "color_change", label: "Смена цвета авто", area: "Конфигуратор", weight: 14 },
   { key: "gwagon_configure", label: "Configure G‑Wagon", area: "G‑Wagon", weight: 8 },
   { key: "finalize", label: "Finalize / заявка", area: "Конфигуратор", weight: 4.2 },
-  { key: "instagram", label: "Instagram в футере", area: "Футер", weight: 3.1 },
   { key: "phone", label: "Клик по телефону", area: "Футер", weight: 2.4 },
   { key: "email", label: "Клик по e-mail", area: "Футер", weight: 1.8 },
   { key: "blog_next", label: "Следующая статья", area: "Блог", weight: 3.4 },

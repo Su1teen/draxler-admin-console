@@ -1,1 +1,0 @@
-import{r as t}from"./index-BXGoxP6i.js";function a(e=1e3){const[r,o]=t.useState(()=>Date.now());return t.useEffect(()=>{const n=setInterval(()=>o(Date.now()),e);return()=>clearInterval(n)},[e]),r}export{a as u};

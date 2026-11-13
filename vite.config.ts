@@ -9,7 +9,9 @@ export default defineConfig({
   plugins: [
     tanstackStart(),
     react(),
-    nitro(),
+    // Pin the Vercel function runtime: otherwise Nitro copies the build machine's Node
+    // version (a Node 20 build produced "nodejs20.x", which Vercel has discontinued).
+    nitro({ vercel: { functions: { runtime: "nodejs22.x" } } }),
     tailwindcss(),
     tsconfigPaths(),
   ],

@@ -1,1 +1,0 @@
-import{g as u,p as n}from"./motion-DX0KCI6B.js";const s={Tamirlan:"admin",Sultan:"admin"},o=u()(n(e=>({user:null,login:(r,t)=>{const a=s[r];return a&&a===t?(e({user:{name:r}}),!0):!1},logout:()=>e({user:null})}),{name:"draxler-auth"}));export{o as u};
