@@ -9,24 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
-import { Route as AppUploadRouteImport } from './routes/_app/upload'
-import { Route as AppQueueRouteImport } from './routes/_app/queue'
-import { Route as AppBatchRouteImport } from './routes/_app/batch'
-import { Route as AppArchiveRouteImport } from './routes/_app/archive'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
+import { Route as AppArchiveRouteImport } from './routes/_app/archive'
+import { Route as AppBatchRouteImport } from './routes/_app/batch'
+import { Route as AppQueueRouteImport } from './routes/_app/queue'
+import { Route as AppUploadRouteImport } from './routes/_app/upload'
 import { Route as AppBlogIndexRouteImport } from './routes/_app/blog.index'
 import { Route as AppBlogPostIdRouteImport } from './routes/_app/blog.$postId'
 
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -34,19 +34,9 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppUploadRoute = AppUploadRouteImport.update({
-  id: '/upload',
-  path: '/upload',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppQueueRoute = AppQueueRouteImport.update({
-  id: '/queue',
-  path: '/queue',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppBatchRoute = AppBatchRouteImport.update({
-  id: '/batch',
-  path: '/batch',
+const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => AppRoute,
 } as any)
 const AppArchiveRoute = AppArchiveRouteImport.update({
@@ -54,9 +44,19 @@ const AppArchiveRoute = AppArchiveRouteImport.update({
   path: '/archive',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
+const AppBatchRoute = AppBatchRouteImport.update({
+  id: '/batch',
+  path: '/batch',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppQueueRoute = AppQueueRouteImport.update({
+  id: '/queue',
+  path: '/queue',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppUploadRoute = AppUploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
   getParentRoute: () => AppRoute,
 } as any)
 const AppBlogIndexRoute = AppBlogIndexRouteImport.update({
@@ -149,18 +149,18 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_app': {
       id: '/_app'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/': {
@@ -170,25 +170,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/upload': {
-      id: '/_app/upload'
-      path: '/upload'
-      fullPath: '/upload'
-      preLoaderRoute: typeof AppUploadRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/queue': {
-      id: '/_app/queue'
-      path: '/queue'
-      fullPath: '/queue'
-      preLoaderRoute: typeof AppQueueRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/batch': {
-      id: '/_app/batch'
-      path: '/batch'
-      fullPath: '/batch'
-      preLoaderRoute: typeof AppBatchRouteImport
+    '/_app/analytics': {
+      id: '/_app/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AppAnalyticsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/archive': {
@@ -198,11 +184,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppArchiveRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/analytics': {
-      id: '/_app/analytics'
-      path: '/analytics'
-      fullPath: '/analytics'
-      preLoaderRoute: typeof AppAnalyticsRouteImport
+    '/_app/batch': {
+      id: '/_app/batch'
+      path: '/batch'
+      fullPath: '/batch'
+      preLoaderRoute: typeof AppBatchRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/queue': {
+      id: '/_app/queue'
+      path: '/queue'
+      fullPath: '/queue'
+      preLoaderRoute: typeof AppQueueRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/upload': {
+      id: '/_app/upload'
+      path: '/upload'
+      fullPath: '/upload'
+      preLoaderRoute: typeof AppUploadRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/blog/': {
