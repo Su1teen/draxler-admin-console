@@ -132,7 +132,7 @@ function Dashboard() {
                   <span className="text-muted-foreground">{e.action}</span>
                 </div>
                 <div className="text-[12px] text-muted-foreground tabular-nums shrink-0">
-                  {formatRelative(e.at, now)}
+                  {formatRelative(new Date(e.created_at).getTime(), now)}
                 </div>
               </div>
             </li>
