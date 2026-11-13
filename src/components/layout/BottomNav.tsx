@@ -11,7 +11,7 @@ export function BottomNav() {
 
   return (
     <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur border-t border-border pb-[env(safe-area-inset-bottom)]">
-      <ul className="grid grid-cols-5">
+      <ul className="grid grid-cols-7">
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.to, item.exact);
           const Icon = item.icon;
@@ -32,7 +32,9 @@ export function BottomNav() {
                   />
                 )}
                 <Icon className="w-[19px] h-[19px]" strokeWidth={1.75} />
-                <span className="text-[10.5px] tracking-wide">{item.label}</span>
+                <span className="text-[9.5px] sm:text-[10.5px] tracking-tight sm:tracking-wide truncate max-w-full px-0.5">
+                  {item.label}
+                </span>
               </Link>
             </li>
           );

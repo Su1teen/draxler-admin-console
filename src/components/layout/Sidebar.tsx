@@ -1,10 +1,19 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutGrid, UploadCloud, Layers, ListOrdered, Archive, LogOut } from "lucide-react";
+import {
+  LayoutGrid,
+  UploadCloud,
+  Layers,
+  ListOrdered,
+  Archive,
+  LogOut,
+  BarChart3,
+  Newspaper,
+} from "lucide-react";
 import { useAuth } from "@/store/auth.store";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
-  to: "/" | "/upload" | "/batch" | "/queue" | "/archive";
+  to: "/" | "/analytics" | "/upload" | "/batch" | "/queue" | "/archive" | "/blog";
   label: string;
   icon: typeof LayoutGrid;
   exact?: boolean;
@@ -12,10 +21,12 @@ type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Главная", icon: LayoutGrid, exact: true },
+  { to: "/analytics", label: "Аналитика", icon: BarChart3 },
   { to: "/upload", label: "Загрузка", icon: UploadCloud },
   { to: "/batch", label: "Пакет", icon: Layers },
   { to: "/queue", label: "Очередь", icon: ListOrdered },
   { to: "/archive", label: "Архив", icon: Archive },
+  { to: "/blog", label: "Блог", icon: Newspaper },
 ];
 
 export function Sidebar() {

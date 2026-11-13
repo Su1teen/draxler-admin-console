@@ -16,6 +16,9 @@ import { Route as AppUploadRouteImport } from './routes/_app/upload'
 import { Route as AppQueueRouteImport } from './routes/_app/queue'
 import { Route as AppBatchRouteImport } from './routes/_app/batch'
 import { Route as AppArchiveRouteImport } from './routes/_app/archive'
+import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
+import { Route as AppBlogIndexRouteImport } from './routes/_app/blog.index'
+import { Route as AppBlogPostIdRouteImport } from './routes/_app/blog.$postId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -51,47 +54,92 @@ const AppArchiveRoute = AppArchiveRouteImport.update({
   path: '/archive',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBlogIndexRoute = AppBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBlogPostIdRoute = AppBlogPostIdRouteImport.update({
+  id: '/blog/$postId',
+  path: '/blog/$postId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
+  '/analytics': typeof AppAnalyticsRoute
   '/archive': typeof AppArchiveRoute
   '/batch': typeof AppBatchRoute
   '/queue': typeof AppQueueRoute
   '/upload': typeof AppUploadRoute
+  '/blog/$postId': typeof AppBlogPostIdRoute
+  '/blog/': typeof AppBlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/analytics': typeof AppAnalyticsRoute
   '/archive': typeof AppArchiveRoute
   '/batch': typeof AppBatchRoute
   '/queue': typeof AppQueueRoute
   '/upload': typeof AppUploadRoute
   '/': typeof AppIndexRoute
+  '/blog/$postId': typeof AppBlogPostIdRoute
+  '/blog': typeof AppBlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/archive': typeof AppArchiveRoute
   '/_app/batch': typeof AppBatchRoute
   '/_app/queue': typeof AppQueueRoute
   '/_app/upload': typeof AppUploadRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/blog/$postId': typeof AppBlogPostIdRoute
+  '/_app/blog/': typeof AppBlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/archive' | '/batch' | '/queue' | '/upload'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/analytics'
+    | '/archive'
+    | '/batch'
+    | '/queue'
+    | '/upload'
+    | '/blog/$postId'
+    | '/blog/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/archive' | '/batch' | '/queue' | '/upload' | '/'
+  to:
+    | '/login'
+    | '/analytics'
+    | '/archive'
+    | '/batch'
+    | '/queue'
+    | '/upload'
+    | '/'
+    | '/blog/$postId'
+    | '/blog'
   id:
     | '__root__'
     | '/_app'
     | '/login'
+    | '/_app/analytics'
     | '/_app/archive'
     | '/_app/batch'
     | '/_app/queue'
     | '/_app/upload'
     | '/_app/'
+    | '/_app/blog/$postId'
+    | '/_app/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -150,23 +198,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppArchiveRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/analytics': {
+      id: '/_app/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AppAnalyticsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/blog/': {
+      id: '/_app/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof AppBlogIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/blog/$postId': {
+      id: '/_app/blog/$postId'
+      path: '/blog/$postId'
+      fullPath: '/blog/$postId'
+      preLoaderRoute: typeof AppBlogPostIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppArchiveRoute: typeof AppArchiveRoute
   AppBatchRoute: typeof AppBatchRoute
   AppQueueRoute: typeof AppQueueRoute
   AppUploadRoute: typeof AppUploadRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppBlogPostIdRoute: typeof AppBlogPostIdRoute
+  AppBlogIndexRoute: typeof AppBlogIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAnalyticsRoute: AppAnalyticsRoute,
   AppArchiveRoute: AppArchiveRoute,
   AppBatchRoute: AppBatchRoute,
   AppQueueRoute: AppQueueRoute,
   AppUploadRoute: AppUploadRoute,
   AppIndexRoute: AppIndexRoute,
+  AppBlogPostIdRoute: AppBlogPostIdRoute,
+  AppBlogIndexRoute: AppBlogIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
